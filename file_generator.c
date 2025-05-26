@@ -1,11 +1,3 @@
-/*
- * generator.c - Input file generator for Golf Assignment
- * Generates 20 input files with equal numbers of balls and holes
- * Ensures no three balls are collinear
- *
- * Usage: compile and run to produce input1.txt ... input20.txt
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,7 +14,7 @@
 
 typedef struct { double x, y; } Point;
 
-// Check if three points are collinear
+// Sprawdzamy wspolliniowosc 3 punktow
 bool collinear(Point a, Point b, Point c) {
     double det = (b.x - a.x)*(c.y - a.y) - (b.y - a.y)*(c.x - a.x);
     return fabs(det) < 1e-6;
@@ -67,10 +59,10 @@ int main(void) {
         FILE *out = fopen(filename, "w");
         if (!out) continue;
 
-        // Generate random number of points
+        // Generuj ilosc punktow do generacji
         int n = rand() % MAX_POINTS + 1;
 
-        // Generate balls
+        // Generuj pilki
         Point *balls = malloc(sizeof(Point) * n);
         int count = 0;
         while (count < n) {
@@ -87,14 +79,13 @@ int main(void) {
             if (ok) balls[count++] = p;
         }
 
-        // Write balls count and coordinates
         fprintf(out, "%d\n", n);
         for (int i = 0; i < n; i++) {
             fprintf(out, "%.2f %.2f\n", balls[i].x, balls[i].y);
         }
         free(balls);
 
-        // Generate holes with the same count
+        // Generuj dolki
         fprintf(out, "%d\n", n);
         for (int i = 0; i < n; i++) {
             double hx = rand() % COORD_MAX;

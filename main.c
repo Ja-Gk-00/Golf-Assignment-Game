@@ -82,11 +82,11 @@ void ensure_outputs_dir(void) {
     struct _stat info;
     if (_stat("Outputs", &info) != 0) {
         if (_mkdir("Outputs") != 0) {
-            perror("Failed to create Outputs directory");
+            perror("Nie mozna bylo utworzyc folderu Outputs.");
         }
     }
     else if (!(info.st_mode & _S_IFDIR)) {
-        fprintf(stderr, "Error: “Outputs” exists but is not a directory\n");
+        fprintf(stderr, "Error: “Outputs” istnieje, ale nie jest folderem.\n");
     }
 }
 
@@ -176,7 +176,7 @@ void read_input(void) {
     }
     fclose(f);
 
-    printf("[DEBUG] Loaded %s (index=%d): %d balls, %d holes\n",
+    printf("[INFO] Zaladowano %s (index=%d): %d pilek, %d dolkow\n",
            fn, inputIndex, nb, nh);
 }
 
@@ -184,17 +184,17 @@ void read_input(void) {
 void classify_partition(Point *P, int n, Point p, Point q,
                         Point **L, int *nl, Point **R, int *nr)
 {
-    // Krok 1: Oblicz współczynniki prostej: ax + by = d
+    // Krok 1: Oblicz wspo;czynniki prostej: ax + by = d
     double dx = q.y - p.y;
     double dy = p.x - q.x;
     double d  = dx * p.x + dy * p.y;
 
-    // Krok 2: Przydzielenie pamięci na podgrupy
+    // Krok 2: Przydzielenie pamieci na podgrupy
     *L = malloc(n * sizeof(Point));
     *R = malloc(n * sizeof(Point));
     *nl = *nr = 0;
 
-    // Krok 3: Dla każdego punktu oblicz wartość side = a·x + b·y − d
+    // Krok 3: Dla kazdego punktu oblicz wartosc side = a·x + b·y − d
     for (int i = 0; i < n; ++i) {
         double side = dx * P[i].x + dy * P[i].y - d;
         if (side >= 0) {
@@ -208,7 +208,7 @@ void classify_partition(Point *P, int n, Point p, Point q,
 
 // Rekurencyjna funkcja glowna do wyznaczania przydzielania pilek i doklow w pary
 void run_algorithm(Point *B, int bn, Point *H, int hn) {
-    printf("[DEBUG] Run algorithm: bn=%d, hn=%d\n", bn, hn);
+    printf("[INFO] Run algorithm: bn=%d, hn=%d\n", bn, hn);
 
     // Krok 0: Jesli ktoras grupa jest pusta, nie ma dopasowan
     if (bn == 0 || hn == 0) return;
@@ -278,7 +278,7 @@ void run_algorithm(Point *B, int bn, Point *H, int hn) {
         pairs[pairCount++] = (Pair){ p, q };
     else
         pairs[pairCount++] = (Pair){ q, p };
-    printf("[DEBUG] Pivot paired: (%.2f,%.2f) with (%.2f,%.2f)\n",
+    printf("[INFO] Dokonano parowania: (%.2f,%.2f) z (%.2f,%.2f)\n",
            p.x, p.y, q.x, q.y);
 
     // Krok 8: Usun q z listy S, aby pozostale punkty podzielic na dwie grupy
@@ -290,13 +290,13 @@ void run_algorithm(Point *B, int bn, Point *H, int hn) {
     }
     free(S);
 
-    // Krok 9: Podziel pozostałe punkty względem prostej p -> q
+    // Krok 9: Podziel pozostałe punkty względem prostej p <-> q
     Point *Lset, *Rset;
     int nl, nr;
     classify_partition(T, m-1, p, q, &Lset, &nl, &Rset, &nr);
     free(T);
 
-    // Krok 10: Rozdziel Lset na pilki BL i dołki HL
+    // Krok 10: Rozdziel Lset na pilki BL i dolki HL
     Point *BL = malloc(nl * sizeof(Point)); int bl = 0;
     Point *HL = malloc(nl * sizeof(Point)); int hl = 0;
     for (int i = 0; i < nl; ++i) {
@@ -305,7 +305,7 @@ void run_algorithm(Point *B, int bn, Point *H, int hn) {
     }
     free(Lset);
 
-    // Krok 11: Rozdziel Rset na piłki BR i dołki HR
+    // Krok 11: Rozdziel Rset na pilki BR i dolki HR
     Point *BR = malloc(nr * sizeof(Point)); int br = 0;
     Point *HR = malloc(nr * sizeof(Point)); int hr = 0;
     for (int i = 0; i < nr; ++i) {
@@ -314,11 +314,11 @@ void run_algorithm(Point *B, int bn, Point *H, int hn) {
     }
     free(Rset);
 
-    // Krok 12: Rekurencyjne wywołanie na obu podzbiorach
+    // Krok 12: Rekurencyjne wywolanie na obu podzbiorach
     run_algorithm(BL, bl, HL, hl);
     run_algorithm(BR, br, HR, hr);
 
-    // Krok 13: Zwolnienie pamięci pomocniczej
+    // Krok 13: Zwolnienie pamieci pomocniczej
     free(BL); free(HL);
     free(BR); free(HR);
 }
@@ -331,7 +331,7 @@ static void get_exe_dir(char *out, size_t len) {
      strncpy(out, buf, len);
  }
 
-// Save output file
+// Zapisz plik do output
 void save_output(void) {
     char exeDir[MAX_PATH];
     get_exe_dir(exeDir, sizeof(exeDir));
@@ -350,7 +350,7 @@ void save_output(void) {
                 pairs[i].b.x, pairs[i].b.y);
     }
     fclose(f);
-    printf("[DEBUG] Saved output to %s\n", path);
+    printf("[INFO] Zapisano plik wyjsciowy do %s\n", path);
 }
 
 int main(void) {
@@ -392,7 +392,7 @@ int main(void) {
                     x >= btnRun.x && x <= btnRun.x + btnRun.w &&
                     y >= btnRun.y && y <= btnRun.y + btnRun.h)
                 {
-                    printf("[DEBUG] Run clicked\n");
+                    printf("[INFO] Uruchomiono algorytm\n");
                     run_algorithm(balls, nb, holes, nh);
                     save_output();
                     matched = true;
@@ -401,7 +401,7 @@ int main(void) {
                     x >= btnLoad.x && x <= btnLoad.x + btnLoad.w &&
                     y >= btnLoad.y && y <= btnLoad.y + btnLoad.h
                 ) {
-                    printf("[DEBUG] Load clicked\n");
+                    printf("[INFO] Klinkieto w przycisk Load\n");
                     read_input();
                     matched = false; pairCount = 0;
                 }
@@ -409,7 +409,7 @@ int main(void) {
                     x >= btnExit.x && x <= btnExit.x + btnExit.w &&
                     y >= btnExit.y && y <= btnExit.y + btnExit.h)
                 {
-                    printf("[DEBUG] Exit clicked\n");
+                    printf("[INFO] Kliknieto w przycisk Exit\n");
                     goto cleanup;
                 }
             }
@@ -418,21 +418,21 @@ int main(void) {
         SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
         SDL_RenderClear(ren);
 
-        // Draw balls (16×16)
+        // Rysuj pilki
         SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
         for (int i = 0; i < nb; ++i) {
             SDL_FRect r = { balls[i].x - 8.0f, balls[i].y - 8.0f, 16.0f, 16.0f };
             SDL_RenderFillRect(ren, &r);
         }
 
-        // Draw holes (16×16)
+        // Rysuj dolki
         SDL_SetRenderDrawColor(ren, 0, 0, 255, 255);
         for (int i = 0; i < nh; ++i) {
             SDL_FRect r = { holes[i].x - 8.0f, holes[i].y - 8.0f, 16.0f, 16.0f };
             SDL_RenderFillRect(ren, &r);
         }
 
-        // Draw buttons & labels
+        // Rysuj przyciski
         SDL_SetRenderDrawColor(ren, 200, 200, 200, 255);
         SDL_RenderFillRect(ren, &btnRun);
         SDL_RenderFillRect(ren, &btnLoad);
@@ -441,7 +441,7 @@ int main(void) {
         draw_text(ren, btnLoad.x + 10, btnLoad.y + 10, "LOAD", 4);
         draw_text(ren, btnExit.x + 10, btnExit.y + 10, "EXIT", 4);
 
-        // Draw match lines
+        // Rysuj linie laczace
         if (matched) {
             SDL_SetRenderDrawColor(ren, 0, 255, 0, 255);
             for (int i = 0; i < pairCount; ++i) {
