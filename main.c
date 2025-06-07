@@ -10,10 +10,10 @@
 #include <sys/stat.h>
 
 
-#define WINDOW_WIDTH   1600
-#define WINDOW_HEIGHT  1200
-#define BUTTON_W        400
-#define BUTTON_H         80
+#define WINDOW_WIDTH   800
+#define WINDOW_HEIGHT  600
+#define BUTTON_W        200
+#define BUTTON_H         40
 #define MAX_PATH_LEN 260
 
 // 3×5 pomocnicza bitmapa do wypisywania liter
@@ -377,9 +377,9 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    SDL_FRect btnRun  = { 20.0f, WINDOW_HEIGHT - 100.0f, BUTTON_W, BUTTON_H };
-    SDL_FRect btnLoad = {460.0f, WINDOW_HEIGHT - 100.0f, BUTTON_W, BUTTON_H};
-    SDL_FRect btnExit = {900.0f, WINDOW_HEIGHT - 100.0f, BUTTON_W, BUTTON_H };
+    SDL_FRect btnRun  = { 10.0f, WINDOW_HEIGHT - 50.0f, BUTTON_W, BUTTON_H };
+    SDL_FRect btnLoad = {230.0f, WINDOW_HEIGHT - 50.0f, BUTTON_W, BUTTON_H};
+    SDL_FRect btnExit = {450.0f, WINDOW_HEIGHT - 50.0f, BUTTON_W, BUTTON_H };
     SDL_Event e;
 
     while (true) {
@@ -421,14 +421,14 @@ int main(void) {
         // Rysuj pilki
         SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
         for (int i = 0; i < nb; ++i) {
-            SDL_FRect r = { balls[i].x - 8.0f, balls[i].y - 8.0f, 16.0f, 16.0f };
+            SDL_FRect r = { 0.5*balls[i].x - 4.0f, 0.5*balls[i].y - 4.0f, 8.0f, 8.0f };
             SDL_RenderFillRect(ren, &r);
         }
 
         // Rysuj dolki
         SDL_SetRenderDrawColor(ren, 0, 0, 255, 255);
         for (int i = 0; i < nh; ++i) {
-            SDL_FRect r = { holes[i].x - 8.0f, holes[i].y - 8.0f, 16.0f, 16.0f };
+            SDL_FRect r = { 0.5*holes[i].x - 4.0f, 0.5*holes[i].y - 4.0f, 8.0f, 8.0f };
             SDL_RenderFillRect(ren, &r);
         }
 
@@ -437,9 +437,9 @@ int main(void) {
         SDL_RenderFillRect(ren, &btnRun);
         SDL_RenderFillRect(ren, &btnLoad);
         SDL_RenderFillRect(ren, &btnExit);
-        draw_text(ren, btnRun.x + 10, btnRun.y + 10, "RUN", 4);
-        draw_text(ren, btnLoad.x + 10, btnLoad.y + 10, "LOAD", 4);
-        draw_text(ren, btnExit.x + 10, btnExit.y + 10, "EXIT", 4);
+        draw_text(ren, btnRun.x + 5, btnRun.y + 5, "RUN", 2);
+        draw_text(ren, btnLoad.x + 5, btnLoad.y + 5, "LOAD", 2);
+        draw_text(ren, btnExit.x + 5, btnExit.y + 5, "EXIT", 2);
 
         // Rysuj linie laczace
         if (matched) {
@@ -447,8 +447,8 @@ int main(void) {
             for (int i = 0; i < pairCount; ++i) {
                 SDL_RenderLine(
                     ren,
-                    pairs[i].a.x, pairs[i].a.y,
-                    pairs[i].b.x, pairs[i].b.y
+                    0.5*pairs[i].a.x, 0.5*pairs[i].a.y,
+                    0.5*pairs[i].b.x, 0.5*pairs[i].b.y
                 );
             }
         }
