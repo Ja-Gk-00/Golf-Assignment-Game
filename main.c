@@ -110,14 +110,19 @@ static int    nb = 0, nh = 0;
 static int    pairCount = 0;
 static bool   matched   = false;
 
+static void get_exe_dir(char *out, size_t len);
+char *strcat(char *dest, const char *src);
 
 static char *open_file_dialog(void) {
     static char filename[MAX_PATH_LEN] = {0};
+    char exeDir[MAX_PATH_LEN] = {0};
+    get_exe_dir(exeDir, sizeof(exeDir));
     OPENFILENAMEA ofn = { 0 };
     ofn.lStructSize = sizeof(ofn);
     ofn.lpstrFilter = "Text Files\0*.txt\0All Files\0*.*\0";
     ofn.lpstrFile   = filename;
     ofn.nMaxFile    = MAX_PATH_LEN;
+    ofn.lpstrInitialDir = strcat(exeDir, "/Input_Data");
     ofn.Flags       = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
     if (GetOpenFileNameA(&ofn)) {
         return filename;
@@ -359,7 +364,6 @@ int main(void) {
         get_exe_dir(exeDir, sizeof(exeDir));
         SetCurrentDirectoryA(exeDir);
     }
-
     read_input();
 
     if (SDL_Init(SDL_INIT_VIDEO) != true) {
