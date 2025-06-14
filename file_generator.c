@@ -41,9 +41,50 @@ int ensure_directory_windows(const char *path) {
     return -1;
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
     srand((unsigned)time(NULL));
 
+    if (argc == 2) {
+        int n = atoi(argv[1]);
+        if (n <= 0) {
+            fprintf(stderr, "Error: liczba punktow musi byc wieksza od 0 (podano %d)\n", n);
+            return 1;
+        }
+        
+        unsigned id = (unsigned)time(NULL) ^ (unsigned)rand();
+        char filename[64];
+        snprintf(filename, sizeof(filename),
+                    "input_n_%d_%u.txt", n, id);
+
+        FILE *out = fopen(filename, "w");
+        if (!out) { perror(filename); return 1; }
+
+        fprintf(out, "%d\n", n);
+        Point *balls = malloc(n * sizeof(Point));
+        int count = 0;
+        while (count < n) {
+            Point p = { rand() % COORD_MAX, rand() % COORD_MAX };
+            bool ok = true;
+            for (int i = 0; i < count && ok; ++i)
+                for (int j = i+1; j < count; ++j)
+                    if (collinear(balls[i], balls[j], p)) { ok = false; break; }
+            if (ok) balls[count++] = p;
+        }
+        for (int i = 0; i < n; ++i)
+            fprintf(out, "%.2f %.2f\n", balls[i].x, balls[i].y);
+        free(balls);
+
+        fprintf(out, "%d\n", n);
+        for (int i = 0; i < n; ++i) {
+            double hx = rand() % COORD_MAX;
+            double hy = rand() % COORD_MAX;
+            fprintf(out, "%.2f %.2f\n", hx, hy);
+        }
+        fclose(out);
+        printf("Wygenerowano %s z %d pilkami oraz %d dolkami\n",
+                filename, n, n);
+        return 0;
+    }
     const char *dir = "./Input_Data";
 
     if (ensure_directory_windows(dir) == 0) {
@@ -94,7 +135,7 @@ int main(void) {
         }
 
         fclose(out);
-        printf("Generated %s with %d balls and %d holes\n", filename, n, n);
+        printf("Wygenerowano %s z %d pilkami oraz %d dolkami\n", filename, n, n);
     }
 
     return 0;
