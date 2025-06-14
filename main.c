@@ -102,7 +102,7 @@ typedef struct {
     Point a, b;
 } Pair;
 
-// glabalny inicjalny stan obiektow
+// globalny poczatkowy stan obiektow
 static Point *balls   = NULL;
 static Point *holes   = NULL;
 static Pair  *pairs   = NULL;
@@ -354,6 +354,12 @@ void save_output(void) {
 }
 
 int main(void) {
+    {
+        char exeDir[MAX_PATH];
+        get_exe_dir(exeDir, sizeof(exeDir));
+        SetCurrentDirectoryA(exeDir);
+    }
+
     read_input();
 
     if (SDL_Init(SDL_INIT_VIDEO) != true) {
