@@ -34,7 +34,7 @@ Wszystkie nasze pliki wykonywalne powinny uledz rekomplikacji po ewentualnych zm
 Plik wykonywalny **file_generator.exe** generuje 25 plików z instancjami problemu, każdy do pliku .txt o formacie `input_{i}.txt`, gdzie
 i jest numerem instancji i musi występować w nazwie pliku.  
 Plik uruchamiamy poprzez wywołanie pliku wykonywalnego .exe `file_generator.exe`.  
-Użytkownik może wywołać skrypt z agrumentem `<n>` , np. `./file_generator.exe 100`, wtedy wygenerowany zostanie tylko jeden plik w katalogu gdzie znajduje się skrypt `file_generator.exe` z instancją problemu dla ilości dołków i piłek o wartości `<n>`.  
+Użytkownik może wywołać skrypt z agrumentem `<n>` , np. `./file_generator.exe 100`, wtedy wygenerowany zostanie tylko jeden plik do katalogu `Input_Data/` z instancją problemu dla ilości dołków i piłek o wartości `<n>`.  
 **Uwaga.** Plik zostanie zapisany pod nazwą `input_n_<n>_<id>.txt`, gdzie id będzie unikalną i losową wartością dla pliku (później będzie można dopasować do pliku z katalogu Outputs, gdzie potencjalnie zostanie zapisany plik wynikowy).
 
 ### Benchmarking

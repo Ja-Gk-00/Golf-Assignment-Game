@@ -7,12 +7,23 @@
 #include <sys/stat.h> 
 #include <direct.h>  
 #include <errno.h>
+#include <windows.h> 
 
 #define FILE_COUNT 25
 #define MAX_POINTS 50
 #define COORD_MAX 1000
+#define MAX_PATH_LEN 260
 
 typedef struct { double x, y; } Point;
+char *strcat(char *dest, const char *src);
+
+static void get_exe_dir(char *out, size_t len) {
+    char buf[MAX_PATH];
+    GetModuleFileNameA(NULL, buf, MAX_PATH);
+    char *p = strrchr(buf, '\\');
+    if (p) *p = '\0';
+    strncpy(out, buf, len);
+}
 
 // Sprawdzamy wspolliniowosc 3 punktow
 bool collinear(Point a, Point b, Point c) {
@@ -51,10 +62,20 @@ int main(int argc, char *argv[]) {
             return 1;
         }
         
+        const char *dir = "./Input_Data";
+
+        if (ensure_directory_windows(dir) == 0) {
+            printf("Folder '%s' zostal utworzony.\n", dir);
+        } else {
+            perror("ensure_directory");
+            return 1;
+        }
+
+
         unsigned id = (unsigned)time(NULL) ^ (unsigned)rand();
-        char filename[64];
+        char filename[128];
         snprintf(filename, sizeof(filename),
-                    "input_n_%d_%u.txt", n, id);
+                    "Input_Data/input_n_%d_%u.txt", n, id);
 
         FILE *out = fopen(filename, "w");
         if (!out) { perror(filename); return 1; }
