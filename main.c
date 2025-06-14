@@ -115,14 +115,15 @@ char *strcat(char *dest, const char *src);
 
 static char *open_file_dialog(void) {
     static char filename[MAX_PATH_LEN] = {0};
-    char exeDir[MAX_PATH_LEN] = {0};
-    get_exe_dir(exeDir, sizeof(exeDir));
     OPENFILENAMEA ofn = { 0 };
     ofn.lStructSize = sizeof(ofn);
     ofn.lpstrFilter = "Text Files\0*.txt\0All Files\0*.*\0";
+    char exeDir[MAX_PATH_LEN] = {0};
+    get_exe_dir(exeDir, sizeof(exeDir));
     ofn.lpstrFile   = filename;
     ofn.nMaxFile    = MAX_PATH_LEN;
     ofn.lpstrInitialDir = strcat(exeDir, "/Input_Data");
+    ofn.lpstrInitialDir = exeDir;
     ofn.Flags       = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
     if (GetOpenFileNameA(&ofn)) {
         return filename;
@@ -360,7 +361,7 @@ void save_output(void) {
 
 int main(void) {
     {
-        char exeDir[MAX_PATH];
+        char exeDir[MAX_PATH_LEN] = {0};
         get_exe_dir(exeDir, sizeof(exeDir));
         SetCurrentDirectoryA(exeDir);
     }
