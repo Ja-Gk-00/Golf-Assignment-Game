@@ -360,11 +360,9 @@ void save_output(void) {
 }
 
 int main(void) {
-    {
-        char exeDir[MAX_PATH_LEN] = {0};
-        get_exe_dir(exeDir, sizeof(exeDir));
-        SetCurrentDirectoryA(exeDir);
-    }
+    char exeDir[MAX_PATH_LEN] = {0};
+    get_exe_dir(exeDir, sizeof(exeDir));
+    SetCurrentDirectoryA(exeDir);
     read_input();
 
     if (SDL_Init(SDL_INIT_VIDEO) != true) {
